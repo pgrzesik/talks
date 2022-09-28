@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta charset="utf-8">
+    <style>
+     @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+     @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+     @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+     body { font-family: 'Droid Serif'; }
+     h1, h2, h3 {
+       font-family: 'Yanone Kaffeesatz';
+       font-weight: normal;
+     }
+     .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Hello, world!
+
+---
+
+# Agenda
+
+1. Who am I?
+2. What do I do?
+3. What I've been working on recently
+4. How can I help you?
+5. Where can I be found?
+
+---
+
+# Who am I?
+
+.center[![Profile picture](https://drive.google.com/uc?export=view&id=1PqvX0hUSxHasNiQPZweQdCaN3B6huDiI)]
+
+- Open-source enthusiast
+- AWS solution architect
+- Product-minded engineer
+- PhD candidate at Silesian University of Technology
+
+---
+
+# What do I do?
+
+When it comes to technologies, most recently I've been focusing on serverless
+solutions on AWS Cloud, writing code mostly in Python and JavaScript.
+
+While being a backend engineer for the better part of my career, I'm not afraid of doing some
+frontend or infrastructure work whenever needed.
+
+I also like sharing my knowledge and over the years I've had a chance to speak at a few meetups and conferences. Most
+recently I've also been giving guest lectures at the Silesian University of
+Technology, where I'm completing my PhD studies.
+
+Whenever I'm not coding, I'm probably wandering in the mountains or assembling a new LEGO set with my wife.
+
+---
+
+# What I've been working on recently
+
+Recently, I've been mostly working on open-source projects in Serverless Framework ecosystem such as:
+
+- [Serverless Framework](https://github.com/serverless/serverless)
+- [Serverless Compose](https://github.com/serverless/compose)
+- [Serverless Python Requirements plugin](https://github.com/serverless/serverless-python-requirements)
+- [Serverless Azure Functions plugin](https://github.com/serverless/serverless-azure-functions)
+- [Serverless Google Cloud Functions plugin](https://github.com/serverless/serverless-google-cloudfunctions)
+
+In addition to that, I've also been working on projects like:
+
+- Building a data acquisition pipeline for IoT data from Autonomous Guided Vehicles
+- Building a data lake and data processing pipeline in Microsoft Azure
+- Edge analytics on Jetson Xavier NX and Jetson Nano
+- Preparing for AWS Solutions Architect Professional certification
+- Various Discord, Slack, and Telegram bots
+- ...and many more!
+
+---
+
+# A small configuration snippet from a Terraform project that I was working on recently
+
+```hcl
+resource "azurerm_eventhub" "eventhub" {
+  name                = var.eventhub_name
+  namespace_name      = azurerm_eventhub_namespace.eventhub_namespace.name
+  resource_group_name = azurerm_resource_group.rg.name
+  partition_count     = 1
+  message_retention   = 1
+
+  capture_description {
+    enabled = true
+    encoding = "Avro"
+    interval_in_seconds = 300
+    destination  {
+      name = "EventHubArchive.AzureBlockBlob"
+      blob_container_name = azurerm_storage_container.storage_container.name
+      storage_account_id = azurerm_storage_account.storage_account.id
+      archive_name_format = "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}"
+    }
+  }
+}
+```
+
+---
+
+# Where can I be found?
+
+
+- Twitter - https://twitter.com/p_grzesik
+- Linkedin - https://www.linkedin.com/in/piotr-jakub-grzesik/
+- Github - https://github.com/pgrzesik
+
+Come and say hi!
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+     var slideshow = remark.create();
+    </script>
+  </body>
+</html>
