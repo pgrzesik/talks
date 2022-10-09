@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta charset="utf-8">
+    <style>
+     @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+     @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+     @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+     body { font-family: 'Droid Serif'; }
+     h1, h2, h3 {
+       font-family: 'Yanone Kaffeesatz';
+       font-weight: normal;
+     }
+     .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Supercharge your applications with AWS Rekognition (and few lines of code!)
+
+---
+
+# Agenda
+
+1. Who am I?
+2. What is AWS Rekognition?
+3. Why would you like to use it?
+4. Use cases
+5. Summary
+
+---
+
+# Who am I?
+
+.center[![Profile picture](https://drive.google.com/uc?export=view&id=1PqvX0hUSxHasNiQPZweQdCaN3B6huDiI)]
+
+- Open-source enthusiast
+- AWS solution architect
+- Product-minded engineer
+- PhD candidate at Silesian University of Technology
+
+---
+
+# What is AWS Rekognition?
+
+<span class="center">
+  <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/655518/images/4759365/Amazon-Rekognition.png" width="100" />
+</span>
+
+- Image and video recognition service, offered by Amazon Web Services
+- Supports processing local and S3-stored images
+- Supports batch and real-time processing (e.g. for analysing live video streams)
+- 1000 minutes of video analysis and 5000 images per month available in Free Tier
+- Alternatives: Google Cloud Vision API, Azure Computer Vision API
+
+---
+
+# What is AWS Rekognition?
+
+<span class="center">
+  <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/655518/images/4759365/Amazon-Rekognition.png" width="100" />
+</span>
+
+Use cases for AWS Rekognition include:
+- Object and scenery detection
+- Facial recognition and analysis
+- Face comparison
+- Inappropriate image detection
+- Celebrity recognition
+- Text in image detection
+
+---
+
+# Why would you want to use it?
+
+<span class="center">
+  <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/655518/images/4759365/Amazon-Rekognition.png" width="100" />
+</span>
+
+- You can enhance your application with AI-capabilities with, literally, a few lines of code
+- You don't need specific ML/DL knowledge
+- You don't want to spend too much time on development
+- You don't want to think about scaling your ML APIs
+- You want to have predictable billing and only pay for actual use
+
+---
+
+# Use cases - detecting labels
+
+In our first example, we will start with detecting labels for a picture with a small kitten:
+
+<span class="center">
+  <img src="https://raw.githubusercontent.com/pgrzesik/aws-ml-apis/a8cdfa56c55a843a10b9532df71a09e504b583f9/rekognition/kitten.jpeg" width="600" />
+</span>
+
+---
+
+# Use cases - detecting labels
+
+Detecting labels requires just a few lines of Python code:
+
+```python
+from pprint import pprint
+import boto3
+
+session = boto3.session.Session()
+rekognition_client = session.client('rekognition')
+
+kitten_response = rekognition_client.detect_labels(
+    Image={
+        'S3Object': {
+            'Bucket': 'aws-ml-apis',
+            'Name': 'rekognition/kitten.jpeg'
+        }
+    }
+)
+pprint.pprint(kitten_response['Labels'])
+```
+
+---
+
+# Use cases - detecting labels
+
+
+In our response, we get the following results:
+
+```python
+[
+  {'Confidence': 89.05458068847656, 'Name': 'Animal',},
+  {'Confidence': 89.05458068847656, 'Name': 'Cat'},
+  {'Confidence': 89.05458068847656, 'Name': 'Mammal'},
+  {'Confidence': 89.05458068847656, 'Name': 'Pet'},
+  {'Confidence': 89.05458068847656, 'Name': 'Siamese'},
+  {'Confidence': 84.57369995117188, 'Name': 'Abyssinian'},
+  {'Confidence': 82.66973114013672, 'Name': 'Kitten'}
+]
+```
+
+---
+
+# Use cases - detecting faces
+
+In our second example, we will try detecting faces on the following image:
+
+<span class="center">
+  <img src="https://raw.githubusercontent.com/pgrzesik/aws-ml-apis/a8cdfa56c55a843a10b9532df71a09e504b583f9/rekognition/people.jpeg" width="700" />
+</span>
+
+---
+
+# Use cases - detecting faces
+
+Detecting faces requires just a few lines of Python code:
+
+```python
+from pprint import pprint
+import boto3
+
+session = boto3.session.Session()
+rekognition_client = session.client('rekognition')
+
+faces_response = rekognition_client.detect_faces(
+    Image={
+        'S3Object': {
+            'Bucket': 'aws-ml-apis',
+            'Name': 'rekognition/people.jpeg'
+        }
+    }
+)
+pprint.pprint(faces_response)
+```
+
+---
+
+# Use cases - detecting faces
+
+In our response, we get the following results (trimmed down) for each face:
+
+```
+    {
+      'BoundingBox': {
+        'Height': 0.07193230092525482,
+        'Left': 0.16031746566295624,
+        ... # also `Top` and `Width`
+      },
+      'Confidence': 99.9825210571289,
+      'Landmarks': [
+        {
+          'Type': 'eyeLeft',
+          'X': 0.1745094358921051,
+          'Y': 0.3176249563694
+        },
+        ... # we also have `eyeRight`, `mouthLeft`, `mouthRight`, and `nose`
+      'Pose': {
+        'Pitch': 11.795650482177734,
+        ... # also `Roll` and `Yaw`
+      },
+      'Quality': {
+        'Brightness': 47.4937629699707,
+        'Sharpness': 96.09123451231,
+      }
+    }
+```
+
+---
+
+# Use cases - detecting faces
+
+After drawing boxes around each face based on coordinates from response, we achieve the following:
+
+<span class="center">
+  <img src="https://i.ibb.co/tzGMvX9/withboxes.png" width="700" />
+</span>
+
+
+---
+
+# Use cases - detecting text
+
+In our final example, we will try to detect text on the following image:
+
+<span class="center">
+  <img src="https://raw.githubusercontent.com/pgrzesik/aws-ml-apis/a8cdfa56c55a843a10b9532df71a09e504b583f9/rekognition/exit.jpg" width="600" />
+</span>
+
+---
+
+# Use cases - detecting text
+
+Detecting text, as you can probably already guess, requires just a few lines of Python code:
+
+```python
+from pprint import pprint
+import boto3
+
+session = boto3.session.Session()
+rekognition_client = session.client('rekognition')
+
+exit_response = rekognition_client.detect_text(
+  Image={
+    'S3Object': {
+      'Bucket': 'aws-ml-apis',
+      'Name': 'rekognition/exit.jpg'
+    }
+  }
+)
+
+pprint.pprint(exit_response)
+```
+
+---
+
+# Use cases - detecting text
+
+In our response we get the following (trimmed down) results:
+
+```python
+{
+  'TextDetections': [
+    {
+      'Confidence': 99.98638916015625,
+      'DetectedText': 'EXIT',
+      'Geometry': {
+        'BoundingBox': {
+          'Height': 0.21590876579284668,
+          'Left': 0.32340091466903687,
+          'Top': 0.1956903040409088,
+          'Width': 0.3292217254638672
+        },
+        'Polygon': [
+          {
+            'X': 0.32340091466903687,
+            'Y': 0.1956903040409088
+          },
+        ]
+      },
+      'Id': 0,
+      'Type': 'LINE'
+    },
+    ... # Also includes detection of `WORD` type
+  ],
+}
+```
+
+---
+
+# Summary
+
+<span class="center">
+  <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/655518/images/4759365/Amazon-Rekognition.png" width="100" />
+</span>
+
+Supercharing your apps with AI-capabilities was never easier. As we've seen it takes only a few lines of code to introduce ML-powered APIs to our codebase, and it doesn't require you to be an expert in ML/DL. AWS Rekognition is a great tool for that, but if you're on Google Cloud or Microsoft, they offer very similar solutions as well.
+
+---
+
+# Q&A
+
+If you'd like to reach out to me personally, you can find me on:
+
+
+- Twitter - https://twitter.com/p_grzesik
+- Linkedin - https://www.linkedin.com/in/piotr-jakub-grzesik/
+- Github - https://github.com/pgrzesik
+
+Come and say hi!
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+     var slideshow = remark.create();
+    </script>
+  </body>
+</html>
